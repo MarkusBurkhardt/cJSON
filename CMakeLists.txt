@@ -107,7 +107,6 @@ foreach(compiler_flag ${custom_compiler_flags})
     endif()
 endforeach()
 
-option(CJSON_BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(ENABLE_TARGET_EXPORT "Enable exporting of CMake targets. Disable when it causes problems!" ON)
 
 #cJSON
@@ -116,7 +115,7 @@ set(CJSON_LIB cjson)
 file(GLOB HEADERS cJSON.h)
 set(SOURCES cJSON.c)
 
-option(BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" Off)
+option(CJSON_BUILD_SHARED_AND_STATIC_LIBS "Build both shared and static libraries" Off)
 option(CJSON_OVERRIDE_BUILD_SHARED_LIBS "Override CJSON_BUILD_SHARED_LIBS with CJSON_BUILD_SHARED_LIBS" OFF)
 option(CJSON_BUILD_SHARED_LIBS "Overrides CJSON_BUILD_SHARED_LIBS if CJSON_OVERRIDE_BUILD_SHARED_LIBS is enabled" ON)
 option(ENABLE_CJSON_VERSION_SO "Enables cJSON so version" ON)
@@ -127,7 +126,7 @@ else()
     set(CJSON_LIBRARY_TYPE STATIC)
 endif()
 
-if (NOT BUILD_SHARED_AND_STATIC_LIBS)
+if (NOT CJSON_BUILD_SHARED_AND_STATIC_LIBS)
     add_library("${CJSON_LIB}" "${CJSON_LIBRARY_TYPE}" "${HEADERS}" "${SOURCES}")
 else()
     # See https://cmake.org/Wiki/CMake_FAQ#How_do_I_make_my_shared_and_static_libraries_have_the_same_root_name.2C_but_different_suffixes.3F
@@ -155,7 +154,7 @@ if (CJSON_INSTALL)
     )
 endif()
 
-if (BUILD_SHARED_AND_STATIC_LIBS)
+if (CJSON_BUILD_SHARED_AND_STATIC_LIBS)
     install(TARGETS "${CJSON_LIB}-static"
     EXPORT "${CJSON_LIB}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}"
@@ -165,6 +164,8 @@ endif()
 if(ENABLE_TARGET_EXPORT)
     # export library information for CMake projects
     install(EXPORT "${CJSON_LIB}" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/cJSON")
+else()
+
 endif()
 
 if(ENABLE_CJSON_VERSION_SO)
@@ -182,7 +183,7 @@ if(ENABLE_CJSON_UTILS)
     file(GLOB HEADERS_UTILS cJSON_Utils.h)
     set(SOURCES_UTILS cJSON_Utils.c)
 
-    if (NOT BUILD_SHARED_AND_STATIC_LIBS)
+    if (NOT CJSON_BUILD_SHARED_AND_STATIC_LIBS)
         add_library("${CJSON_UTILS_LIB}" "${CJSON_LIBRARY_TYPE}" "${HEADERS_UTILS}" "${SOURCES_UTILS}")
         target_link_libraries("${CJSON_UTILS_LIB}" "${CJSON_LIB}")
     else()
@@ -204,7 +205,7 @@ if(ENABLE_CJSON_UTILS)
         RUNTIME DESTINATION "${CMAKE_INSTALL_FULL_BINDIR}"
         INCLUDES DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}"
     )
-    if (BUILD_SHARED_AND_STATIC_LIBS)
+    if (CJSON_BUILD_SHARED_AND_STATIC_LIBS)
         install(TARGETS "${CJSON_UTILS_LIB}-static"
         EXPORT "${CJSON_UTILS_LIB}"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}"
