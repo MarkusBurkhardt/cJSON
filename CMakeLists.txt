@@ -241,7 +241,7 @@ configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/library_config/cJSONConfigVersion.cmake.in"
     ${PROJECT_BINARY_DIR}/cJSONConfigVersion.cmake @ONLY)
 
-if(ENABLE_TARGET_EXPORT)
+if ((ENABLE_TARGET_EXPORT) AND (CJSON_INSTALL))
     # Install package config files
     install(FILES ${PROJECT_BINARY_DIR}/cJSONConfig.cmake
         ${PROJECT_BINARY_DIR}/cJSONConfigVersion.cmake
